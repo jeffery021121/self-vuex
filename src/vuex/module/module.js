@@ -2,11 +2,12 @@ import { forEach } from "../utils"
 
 export default class Module {
   constructor(optModule) {
-    const { state } = optModule
+    const { state, namespaced } = optModule
     this._rawModule = optModule
     this._children = {}
     this.state = state
-    optModule._rawModule = this //这里和第六行是一个互记，让参数上有这个实例，是为了动态注册
+    this.namespaced = namespaced ? true : false
+    optModule._rawModule = this //让参数上有这个实例，是为了动态注册
   }
   addChild(name, child) {
     this._children[name] = child

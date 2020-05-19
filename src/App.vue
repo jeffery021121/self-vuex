@@ -13,25 +13,25 @@
   </div>
 </template>
 <script>
-// import { mapState, mapGetters ,mapActions,mapMutations} from "./vuex";
-import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
+import { mapState, mapGetters ,mapActions,mapMutations} from "./vuex";
+// import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
   computed: {
-    // ...mapState(["age"]),
-    age() {
-      return this.$store.state.age;
-    },
-    getAge() {
-      return this.$store.getters.getAge;
-    }
-    // ...mapGetters(["getAge"])
+    ...mapState(["age"]),
+    // age() {
+    //   return this.$store.state.age;
+    // },
+    // getAge() {
+    //   return this.$store.getters.getAge;
+    // }
+    ...mapGetters(["getAge"])
   },
   methods: {
-    // ...mapMutations(["changeAge"])
-    changeAge(payload) {
-      this.$store.commit("changeAge", payload);
-    }
+    ...mapMutations(["changeAge"])
+    // changeAge(payload) {
+    //   this.$store.commit("changeAge", payload);
+    // }
   },
   mounted() {}
 };
