@@ -7,11 +7,12 @@ const getParent = (rootState, path) => {
   return path.slice(0, -1).reduce((memo, current) => { return memo[current] }, rootState)
 }
 
+// 全局注入$store属性
 function install(_Vue) {
-  //全局注入$store属性
   Vue = _Vue
   applyMixin(_Vue)
 }
+// 在这之前是整理参数生成树，注释写在class内部了
 
 /*
   2.安装module，将module的数据整合到store上。
@@ -118,12 +119,22 @@ class Store {
   get state() {
     return this._modules.root.state
   }
-  commit=(mutationName, payload)=> {
+  commit = (mutationName, payload) => {
     console.log('commit____this', this)
     this._mutations[mutationName].forEach(mutation => mutation(payload))
   }
-  dispatch=(actionName, payload)=> {
+  dispatch = (actionName, payload) => {
     this._actions[actionName].forEach(action => action(payload))
+  }
+  registerModule = (path, module) => {
+    if (typeof path == 'string') path = [path];
+    // 1. 处理函数挂载到this._modules.root上,我们叫它模块注册
+    this._modules.register(path, module)
+    // 2. 将操作好的数据挂载到Store上 我们叫它模块安装
+    // 最后一个参数不能用module，而是得用上一步处理好的 new Module实例，因为需要用到内部的一些方法
+    installModule(this, this.state, path, module._rawModule)
+    // 3. 生成新的vm替换老vm 我们叫他替换 storeVm
+    resetStoreVm(this, this.state)
   }
 }
 
@@ -132,10 +143,17 @@ export {
   Store,
 }
 
-/* 
+/*
+主流程
+1.  install使用Vue.mixin 将$store放到每个组件上
+2.  处理参数或者叫模块注册 将参数处理成树结构挂到this._modules.root上
+3.  处理数据，将所有数据处理成对象格式以后挂到this._modules.root.state上（就像给state强制加了命名空间）,
+    收集actions,mutations,getters,实现commit和dispatch完成发布订阅
+4.  生成store.vm ，将state和getter分别放到data下的$$state和计算属性上，完成响应式
 其实经过这三个步骤以后，一个基本的vuex就已经完成了，剩余没有处理的有
 1. 命名空间
 2. vuex插件系统
 3. 严格模式以及对应的要求（严格模式下只能通过mutation来修改数据）
-4. 动态注册module，其实最终会替换现在的vm
+4. 动态注册module，其实最终会替换现在的vm // 执行主流程，最后替换vm即可,完成
+5. 辅助函数
 */

@@ -102,9 +102,9 @@ let store = new Vuex.Store({ // 内部会创造一个vue实例，通信用的
 // 4.如果增加namespaced:true 会将这个模块的属性 都封装到这个作用域下
 // 5.默认会找当前模块上是否有namespace ，并且将父级的namespace 一同算上，做成命名空间
 
-// store.registerModule(['e'],{
-//     state:{
-//         myAge:100
-//     }
-// })
+store.registerModule(['e'],{
+    state:{
+        myAge:100
+    }
+})
 export default store;

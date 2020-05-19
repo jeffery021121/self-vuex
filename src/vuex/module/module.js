@@ -6,6 +6,7 @@ export default class Module {
     this._rawModule = optModule
     this._children = {}
     this.state = state
+    optModule._rawModule = this //这里和第六行是一个互记，让参数上有这个实例，是为了动态注册
   }
   addChild(name, child) {
     this._children[name] = child
